@@ -1,3 +1,4 @@
+import RayMarchCanvas from "@/components/RayMarchCanvas";
 import ShapeEditor from "@/components/ShapeEditor";
 import ShapesTree from "@/components/ShapesTree";
 import { Montserrat } from "next/font/google";
@@ -11,7 +12,7 @@ export default function Home() {
       className="flex min-h-screen items-center justify-between gap-2 p-2"
     >
       <ShapesTree />
-      
+      <RayMarchCanvas />
       <ShapeEditor />
     </main>
   );
