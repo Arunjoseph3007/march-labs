@@ -30,4 +30,17 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .\? {
+    outline: 1px solid green;
+  }
+
+  .\?\?,
+  .\?\? * {
+    outline: 1px solid green;
+  }
+
+  .\?\?\? *:hover {
+    outline: 1px solid green;
+  }
 }
