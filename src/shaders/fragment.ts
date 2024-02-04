@@ -36,8 +36,7 @@ float circleSDF(vec3 pos, vec3 center, float r){
 float getDist(vec3 pos){
   float dist = pos.y+2.;
   dist = min(dist, circleSDF(pos, vec3(0), 2.));
-  dist = min(dist, circleSDF(pos, vec3(1.5), 0.8));
-  dist = min(dist, circleSDF(pos, lightSrc, 0.5));
+  dist = min(dist, circleSDF(pos, vec3(2.2), 0.8));
 
   return dist;
 }
@@ -94,7 +93,7 @@ void main(){
 
     // Shadow
     vec3 lightDir = normalize(lightSrc-pos);
-    float distToLight = rayMarch(pos+lightDir, lightDir);
+    float distToLight = rayMarch(pos + normal * 0.7, lightDir);
     if(distToLight < length(lightSrc-pos)){
         col *= 0.5;
     }
