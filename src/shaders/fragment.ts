@@ -53,17 +53,19 @@ vec3 getNormal(vec3 pos){
   return normalize(n);
 }
 
-float rayMarch(vec3 org, vec3 dir){
+vec2 rayMarch(vec3 org, vec3 dir){
   float depth = 0.0;
+  float minT = 999999.0;
 
   for(int i = 0; i < MAX_STEPS; i++){
     vec3 pos = org + depth * dir;
     float t = getDist(pos);
+    minT = min(minT,t);
     depth += t;
     if(t < MIN_DIST || depth > MAX_DIST) break;
   }
 
-  return depth;
+  return vec2(depth,minT);
 }
 
 vec3 skyBox(vec3 dir){
@@ -82,7 +84,7 @@ void main(){
   
   vec3 dir = GetRayDir(uv, org, vec3(0), .8);
   
-  float t = rayMarch(org, dir);
+  float t = rayMarch(org, dir).x;
   if(t < MAX_DIST){
     vec3 pos = org + dir * t;
 
@@ -92,10 +94,15 @@ void main(){
     col *= dot(normalize(lightSrc), normal)/2.0+0.4;
 
     // Shadow
+    float shadowRadius = 5.0;
     vec3 lightDir = normalize(lightSrc-pos);
-    float distToLight = rayMarch(pos + normal * 0.7, lightDir);
-    if(distToLight < length(lightSrc-pos)){
-        col *= 0.5;
+    vec2 shadowRes = rayMarch(pos + normal * 0.7, lightDir);
+    float distToLight = shadowRes.x;
+    if(shadowRes.y < MIN_DIST){
+      float shadowFactor = 0.5;
+      col *= shadowFactor;
+    }else if(shadowRes.y < shadowRadius*MIN_DIST){
+      col *= mix(0.5,1.0,shadowRes.y/(shadowRadius*MIN_DIST));
     }
 
     // FOG
