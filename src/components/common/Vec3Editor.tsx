@@ -8,9 +8,19 @@ type IVec3Editor = {
   label: string;
   value: IVec3;
   onChange: (v: IVec3) => void;
+  step?: number;
+  max?: number;
+  min?: number;
 };
 
-export default function Vec3Editor({ label, onChange, value }: IVec3Editor) {
+export default function Vec3Editor({
+  label,
+  onChange,
+  value,
+  step = 0.1,
+  max = 10,
+  min = -10,
+}: IVec3Editor) {
   const [collapsed, setCollapsed] = useState(true);
 
   return (
@@ -36,10 +46,11 @@ export default function Vec3Editor({ label, onChange, value }: IVec3Editor) {
               <button
                 onClick={() => {
                   const newVal: IVec3 = [...value];
-                  newVal[idx] -= 0.1;
+                  newVal[idx] -= step;
                   onChange(newVal);
                 }}
                 className="text-zinc-700 rounded-full hover:text-zinc-500 transition-all"
+                disabled={value[idx] - step < min}
               >
                 <MinusIcon />
               </button>
@@ -52,17 +63,18 @@ export default function Vec3Editor({ label, onChange, value }: IVec3Editor) {
                   newVal[idx] = +e.target.value;
                   onChange(newVal);
                 }}
-                min={-10}
-                max={10}
-                step={0.1}
+                min={min}
+                max={max}
+                step={step}
               />
               <button
                 onClick={() => {
                   const newVal: IVec3 = [...value];
-                  newVal[idx] += 0.1;
+                  newVal[idx] += step;
                   onChange(newVal);
                 }}
                 className="text-zinc-700 rounded-full hover:text-zinc-500 transition-all"
+                disabled={value[idx] + step > max}
               >
                 <PlusIcon />
               </button>
