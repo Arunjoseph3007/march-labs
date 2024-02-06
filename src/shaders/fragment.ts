@@ -4,6 +4,8 @@ in vec2 pos;
 out vec4 outColor;
 uniform vec3 u_mouse;
 uniform vec2 u_resolution;
+uniform vec3 u_lookFrom;
+uniform vec3 u_lookAt;
 
 mat2 rot(float a){
   float c = cos(a);
@@ -79,10 +81,10 @@ void main(){
   vec2 uv = fragCoord/u_resolution.y;
   vec2 m = u_mouse.xy/u_resolution.xy;
 
-  vec3 org = vec3(0, 3, -5);
+  vec3 org = u_lookFrom;
   org.xz *= rot(-m.x*2.0*PI);
   
-  vec3 dir = GetRayDir(uv, org, vec3(0), .8);
+  vec3 dir = GetRayDir(uv, org, u_lookAt, .8);
   
   float t = rayMarch(org, dir).x;
   if(t < MAX_DIST){

@@ -1,8 +1,17 @@
+import useScene from "@/contexts/scene";
+import CameraEditor from "./CameraEditor";
+import DirectLightEditor from "./DirectLightEditor";
+
 export default function ShapeEditor() {
+  const { selectedEntityType } = useScene();
+
   return (
-    <div className="bg-zinc-950 self-stretch w-72 rounded-md p-3 border border-zinc-800">
+    <div className="self-stretch w-72 rounded-md p-3 border border-zinc-800">
       <h2 className="text-xl font-semibold">Shapes Editor</h2>
       <hr />
+
+      {selectedEntityType == "CAMERA" && <CameraEditor />}
+      {selectedEntityType == "DIRECT_LIGHT" && <DirectLightEditor />}
     </div>
   );
 }

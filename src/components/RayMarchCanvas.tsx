@@ -1,3 +1,4 @@
+import useScene from "@/contexts/scene";
 import { FragmentSrc } from "@/shaders/fragment";
 import { VertexSrc } from "@/shaders/vertex";
 import * as webgl from "@/utils/webgl";
@@ -5,14 +6,17 @@ import { ElementRef, MouseEventHandler, useEffect, useRef } from "react";
 
 const positions = [-1, -1, -1, 1, 1, 1, -1, -1, 1, -1, 1, 1];
 
-let canvasTopLeftLoc = { x: 0, y: 0 };
 let gl: WebGL2RenderingContext | null;
+let canvasTopLeftLoc = { x: 0, y: 0 };
 let isMouseDown: boolean = false;
 let mousePosition = { x: 0, y: 0 };
 let mousePositionUniformLocation: WebGLUniformLocation | null = null;
+let lookFromUniformLocation: WebGLUniformLocation | null = null;
+let lookAtUniformLocation: WebGLUniformLocation | null = null;
 
 export default function RayMarchCanvas() {
   const canvasRef = useRef<ElementRef<"canvas">>(null);
+  const { scene } = useScene();
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -46,6 +50,8 @@ export default function RayMarchCanvas() {
       "u_resolution"
     );
     mousePositionUniformLocation = gl.getUniformLocation(program, "u_mouse");
+    lookFromUniformLocation = gl.getUniformLocation(program, "u_lookFrom");
+    lookAtUniformLocation = gl.getUniformLocation(program, "u_lookAt");
 
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -64,6 +70,8 @@ export default function RayMarchCanvas() {
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.useProgram(program);
     gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+    gl.uniform3f(lookFromUniformLocation, ...scene.camera.lookFrom);
+    gl.uniform3f(lookAtUniformLocation, ...scene.camera.lookAt);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -73,6 +81,13 @@ export default function RayMarchCanvas() {
       cancelAnimationFrame(animId);
     };
   }, [canvasRef.current]);
+
+  useEffect(() => {
+    if (!gl) return;
+
+    gl.uniform3f(lookFromUniformLocation, ...scene.camera.lookFrom);
+    gl.uniform3f(lookAtUniformLocation, ...scene.camera.lookAt);
+  }, [scene.camera]);
 
   const handlMouseDown: MouseEventHandler<HTMLCanvasElement> = (e) => {
     isMouseDown = true;
