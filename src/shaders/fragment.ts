@@ -6,6 +6,7 @@ uniform vec3 u_mouse;
 uniform vec2 u_resolution;
 uniform vec3 u_lookFrom;
 uniform vec3 u_lookAt;
+uniform vec3 u_directLight;
 
 mat2 rot(float a){
   float c = cos(a);
@@ -19,7 +20,6 @@ mat2 rot(float a){
 #define PI 3.141592
 #define RGB(X,Y,Z) vec3(X,Y,Z)/255.0
 
-const vec3 lightSrc = vec3(4);
 
 vec3 GetRayDir(vec2 uv, vec3 from, vec3 lookat, float fov) {
   vec3 upDir = vec3(0,1,0);
@@ -82,7 +82,7 @@ void main(){
   vec2 m = u_mouse.xy/u_resolution.xy;
 
   vec3 org = u_lookFrom;
-  org.xz *= rot(-m.x*2.0*PI);
+  // org.xz *= rot(-m.x*2.0*PI);
   
   vec3 dir = GetRayDir(uv, org, u_lookAt, .8);
   
@@ -93,11 +93,11 @@ void main(){
     // Direct lighting
     vec3 normal = getNormal(pos);
     col = vec3(1,0,1);
-    col *= dot(normalize(lightSrc), normal)/2.0+0.4;
+    col *= dot(normalize(u_directLight), normal)/2.0+0.4;
 
     // Shadow
     float shadowRadius = 5.0;
-    vec3 lightDir = normalize(lightSrc-pos);
+    vec3 lightDir = normalize(u_directLight-pos);
     vec2 shadowRes = rayMarch(pos + normal * 0.7, lightDir);
     float distToLight = shadowRes.x;
     if(shadowRes.y < MIN_DIST){

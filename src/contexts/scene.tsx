@@ -1,11 +1,7 @@
-import { ICamera } from "@/types/camera";
+import { IScene } from "@/types/scene";
 import type { IVec3 } from "@/types/vec";
 import { ReactNode, createContext, useContext, useState } from "react";
 import { useImmer } from "use-immer";
-
-type IScene = {
-  camera: ICamera;
-};
 
 type ISceneContext = {
   scene: IScene;
@@ -17,6 +13,7 @@ type ISceneContext = {
   // Editor Control
   selectedEntityType: IEntityType | undefined;
   selectEntity: (type: IEntityType) => void;
+  setDirectLight: (pos: IVec3) => void;
 };
 
 type IEntityType = "CAMERA" | "DIRECT_LIGHT";
@@ -31,6 +28,7 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
       lookAt: [0, 0, 0],
       lookFrom: [0, 3, -5],
     },
+    directLight: [4, 4, 4],
   });
   const [selectedEntityType, setSelectedEntityType] = useState<IEntityType>();
 
@@ -62,6 +60,12 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const setDirectLight = (pos: IVec3) => {
+    setScene((sc) => {
+      sc.directLight = pos;
+    });
+  };
+
   return (
     <SceneContext.Provider
       value={{
@@ -72,6 +76,7 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
         setLookFrom,
         selectedEntityType,
         selectEntity,
+        setDirectLight,
       }}
     >
       {children}

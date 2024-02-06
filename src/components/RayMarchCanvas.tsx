@@ -13,6 +13,7 @@ let mousePosition = { x: 0, y: 0 };
 let mousePositionUniformLocation: WebGLUniformLocation | null = null;
 let lookFromUniformLocation: WebGLUniformLocation | null = null;
 let lookAtUniformLocation: WebGLUniformLocation | null = null;
+let directLightUniformLocation: WebGLUniformLocation | null = null;
 
 export default function RayMarchCanvas() {
   const canvasRef = useRef<ElementRef<"canvas">>(null);
@@ -52,6 +53,10 @@ export default function RayMarchCanvas() {
     mousePositionUniformLocation = gl.getUniformLocation(program, "u_mouse");
     lookFromUniformLocation = gl.getUniformLocation(program, "u_lookFrom");
     lookAtUniformLocation = gl.getUniformLocation(program, "u_lookAt");
+    directLightUniformLocation = gl.getUniformLocation(
+      program,
+      "u_directLight"
+    );
 
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -72,6 +77,7 @@ export default function RayMarchCanvas() {
     gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
     gl.uniform3f(lookFromUniformLocation, ...scene.camera.lookFrom);
     gl.uniform3f(lookAtUniformLocation, ...scene.camera.lookAt);
+    gl.uniform3f(directLightUniformLocation, ...scene.directLight);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -88,6 +94,12 @@ export default function RayMarchCanvas() {
     gl.uniform3f(lookFromUniformLocation, ...scene.camera.lookFrom);
     gl.uniform3f(lookAtUniformLocation, ...scene.camera.lookAt);
   }, [scene.camera]);
+
+  useEffect(() => {
+    if (!gl) return;
+
+    gl.uniform3f(directLightUniformLocation, ...scene.directLight);
+  }, [scene.directLight]);
 
   const handlMouseDown: MouseEventHandler<HTMLCanvasElement> = (e) => {
     isMouseDown = true;
