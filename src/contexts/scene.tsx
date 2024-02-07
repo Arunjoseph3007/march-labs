@@ -3,9 +3,34 @@ import type { IVec3 } from "@/types/vec";
 import { ReactNode, createContext, useContext, useState } from "react";
 import { useImmer } from "use-immer";
 
+const vars: ISceneContext["vars"] = {
+  gl: null,
+  canvasTopLeftLoc: { x: 0, y: 0 },
+  isMouseDown: false,
+  mousePosition: { x: 0, y: 0 },
+};
+const uniforms: ISceneContext["uniforms"] = {
+  mousePositionUniformLocation: null,
+  lookFromUniformLocation: null,
+  lookAtUniformLocation: null,
+  directLightUniformLocation: null,
+};
+
 type ISceneContext = {
   scene: IScene;
-  
+  // Webgl Stuff
+  uniforms: {
+    mousePositionUniformLocation: WebGLUniformLocation | null;
+    lookFromUniformLocation: WebGLUniformLocation | null;
+    lookAtUniformLocation: WebGLUniformLocation | null;
+    directLightUniformLocation: WebGLUniformLocation | null;
+  };
+  vars: {
+    gl: WebGL2RenderingContext | null;
+    canvasTopLeftLoc: { x: number; y: number };
+    isMouseDown: boolean;
+    mousePosition: { x: number; y: number };
+  };
   // Camera controll
   setLookFrom: (org: IVec3) => void;
   setLookAt: (p: IVec3) => void;
@@ -79,6 +104,8 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
         selectedEntityType,
         selectEntity,
         setDirectLight,
+        vars,
+        uniforms,
       }}
     >
       {children}
