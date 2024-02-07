@@ -1,19 +1,21 @@
-import { IScene } from "@/types/scene";
+import type { IScene } from "@/types/scene";
 import type { IVec3 } from "@/types/vec";
 import { ReactNode, createContext, useContext, useState } from "react";
 import { useImmer } from "use-immer";
 
 type ISceneContext = {
   scene: IScene;
+  
   // Camera controll
   setLookFrom: (org: IVec3) => void;
   setLookAt: (p: IVec3) => void;
   setFOV: (f: number) => void;
   setAngle: (a: number) => void;
+  // Direct Light Contoll
+  setDirectLight: (pos: IVec3) => void;
   // Editor Control
   selectedEntityType: IEntityType | undefined;
   selectEntity: (type: IEntityType) => void;
-  setDirectLight: (pos: IVec3) => void;
 };
 
 type IEntityType = "CAMERA" | "DIRECT_LIGHT";

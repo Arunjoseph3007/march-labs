@@ -28,7 +28,7 @@ export default function Vec3Editor({
       <div className="flex items-center gap-1">
         <p>{label}</p>
         <span className="flex-1 text-right text-xs text-zinc-400">
-          {collapsed ? value.map((e) => e.toFixed(2)).join(", ") : ""}
+          {collapsed ? value.map((e) => e.toFixed(1)).join(", ") : ""}
         </span>
         <button
           onClick={() => setCollapsed((p) => !p)}

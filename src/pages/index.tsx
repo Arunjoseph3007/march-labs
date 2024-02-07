@@ -1,6 +1,6 @@
 import RayMarchCanvas from "@/components/RayMarchCanvas";
-import ShapeEditor from "@/components/ShapeEditor";
-import ShapesTree from "@/components/ShapesTree";
+import ElementEditor from "@/components/ElementEditor";
+import ElementTree from "@/components/ElementTree";
 import { Montserrat } from "next/font/google";
 import Head from "next/head";
 
@@ -16,9 +16,9 @@ export default function Home() {
         style={montserrat.style}
         className="flex min-h-screen items-center justify-between gap-2 p-2"
       >
-        <ShapesTree />
+        <ElementTree />
         <RayMarchCanvas />
-        <ShapeEditor />
+        <ElementEditor />
       </main>
     </>
   );

@@ -2,12 +2,12 @@ import useScene from "@/contexts/scene";
 import { BulbIcon } from "@/icons/bulb";
 import { CameraIcon } from "@/icons/camera";
 
-export default function ShapesTree() {
+export default function ElementTree() {
   const { selectEntity } = useScene();
 
   return (
     <div className="self-stretch w-72 rounded-md p-3 border border-zinc-800">
-      <h2 className="text-xl font-semibold">Shapes Tree</h2>
+      <h2 className="text-xl font-semibold">Element Tree</h2>
       <hr />
 
       {/* LIST */}
