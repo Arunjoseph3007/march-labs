@@ -113,27 +113,6 @@ export default function RayMarchCanvas() {
     };
   }, [canvasRef.current]);
 
-  // TODO: Remove this
-  useEffect(() => {
-    if (!vars.gl) return;
-
-    vars.gl.uniform3f(
-      uniforms.lookFromUniformLocation,
-      ...scene.camera.lookFrom
-    );
-    vars.gl.uniform3f(uniforms.lookAtUniformLocation, ...scene.camera.lookAt);
-  }, [scene.camera]);
-
-  // TODO: Remove this
-  useEffect(() => {
-    if (!vars.gl) return;
-
-    vars.gl.uniform3f(
-      uniforms.directLightUniformLocation,
-      ...scene.directLight
-    );
-  }, [scene.directLight]);
-
   const handlMouseDown: MouseEventHandler<HTMLCanvasElement> = (e) => {
     vars.isMouseDown = true;
     vars.mousePosition = {

@@ -1,4 +1,5 @@
 import type { IScene } from "@/types/scene";
+import type { IEntityType, ISceneContext } from "@/types/sceneContext";
 import type { IVec3 } from "@/types/vec";
 import { ReactNode, createContext, useContext, useState } from "react";
 import { useImmer } from "use-immer";
@@ -15,35 +16,6 @@ const uniforms: ISceneContext["uniforms"] = {
   lookAtUniformLocation: null,
   directLightUniformLocation: null,
 };
-
-type ISceneContext = {
-  scene: IScene;
-  // Webgl Stuff
-  uniforms: {
-    mousePositionUniformLocation: WebGLUniformLocation | null;
-    lookFromUniformLocation: WebGLUniformLocation | null;
-    lookAtUniformLocation: WebGLUniformLocation | null;
-    directLightUniformLocation: WebGLUniformLocation | null;
-  };
-  vars: {
-    gl: WebGL2RenderingContext | null;
-    canvasTopLeftLoc: { x: number; y: number };
-    isMouseDown: boolean;
-    mousePosition: { x: number; y: number };
-  };
-  // Camera controll
-  setLookFrom: (org: IVec3) => void;
-  setLookAt: (p: IVec3) => void;
-  setFOV: (f: number) => void;
-  setAngle: (a: number) => void;
-  // Direct Light Contoll
-  setDirectLight: (pos: IVec3) => void;
-  // Editor Control
-  selectedEntityType: IEntityType | undefined;
-  selectEntity: (type: IEntityType) => void;
-};
-
-type IEntityType = "CAMERA" | "DIRECT_LIGHT";
 
 const SceneContext = createContext<ISceneContext>({} as any);
 
@@ -64,15 +36,24 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
   };
 
   const setLookFrom = (org: IVec3) => {
+    if (!vars.gl) return;
+
     setScene((sc) => {
       sc.camera.lookFrom = org;
     });
+    vars.gl.uniform3f(
+      uniforms.lookFromUniformLocation,
+      ...scene.camera.lookFrom
+    );
   };
 
   const setLookAt = (p: IVec3) => {
+    if (!vars.gl) return;
+
     setScene((sc) => {
       sc.camera.lookAt = p;
     });
+    vars.gl.uniform3f(uniforms.lookAtUniformLocation, ...scene.camera.lookAt);
   };
 
   const setFOV = (f: number) => {
@@ -88,9 +69,15 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
   };
 
   const setDirectLight = (pos: IVec3) => {
+    if (!vars.gl) return;
+
     setScene((sc) => {
       sc.directLight = pos;
     });
+    vars.gl.uniform3f(
+      uniforms.directLightUniformLocation,
+      ...scene.directLight
+    );
   };
 
   return (
