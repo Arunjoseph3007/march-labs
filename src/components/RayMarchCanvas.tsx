@@ -104,6 +104,19 @@ export default function RayMarchCanvas() {
       ...scene.directLight
     );
 
+    scene.circles.forEach((circle, i) => {
+      if (!vars.gl) return;
+
+      vars.gl.uniform3f(
+        vars.gl.getUniformLocation(program, `u_circles[${i}].center`),
+        ...circle.center
+      );
+      vars.gl.uniform1f(
+        vars.gl.getUniformLocation(program, `u_circles[${i}].radius`),
+        circle.radius
+      );
+    });
+
     vars.gl.drawArrays(vars.gl.TRIANGLES, 0, 6);
 
     const animId = requestAnimationFrame(renderLoop);

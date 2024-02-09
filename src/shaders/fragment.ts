@@ -2,11 +2,18 @@ export const FragmentSrc = `#version 300 es
 precision highp float;
 in vec2 pos;
 out vec4 outColor;
+
+struct Circle {
+  vec3 center;
+  float radius;
+};
+
 uniform vec3 u_mouse;
 uniform vec2 u_resolution;
 uniform vec3 u_lookFrom;
 uniform vec3 u_lookAt;
 uniform vec3 u_directLight;
+uniform Circle u_circles[10];
 
 mat2 rot(float a){
   float c = cos(a);
@@ -37,8 +44,10 @@ float circleSDF(vec3 pos, vec3 center, float r){
 
 float getDist(vec3 pos){
   float dist = pos.y+2.;
-  dist = min(dist, circleSDF(pos, vec3(0), 2.));
-  dist = min(dist, circleSDF(pos, vec3(2.2), 0.8));
+
+  for(int i = 0; i < u_circles.length(); i++){
+    dist = min(dist,circleSDF(pos, u_circles[i].center, u_circles[i].radius));
+  }
 
   return dist;
 }

@@ -28,6 +28,10 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
       lookFrom: [0, 3, -5],
     },
     directLight: [4, 4, 4],
+    circles: [
+      { center: [0, 0, 0], radius: 2 },
+      { center: [6.2, 2.2, 2.2], radius: 0.8 },
+    ],
   });
   const [selectedEntityType, setSelectedEntityType] = useState<IEntityType>();
 
