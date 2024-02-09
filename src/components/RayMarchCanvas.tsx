@@ -146,7 +146,7 @@ export default function RayMarchCanvas() {
   };
 
   const renderLoop: FrameRequestCallback = (timeStamp) => {
-    if (vars.gl) {
+    if (vars.gl && false) {
       vars.gl.drawArrays(vars.gl.TRIANGLES, 0, 6);
 
       vars.gl.uniform3f(
@@ -166,7 +166,7 @@ export default function RayMarchCanvas() {
       onMouseDown={handlMouseDown}
       onMouseMove={handlMouseMove}
       onMouseUp={handlMouseUp}
-      className="self-stretch flex-1 border border-zinc-800 rounded-md"
+      className="self-stretc flex-1 border border-zinc-800 rounded-md"
     />
   );
 }

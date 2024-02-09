@@ -8,12 +8,12 @@ export default function ElementTree() {
   const { selectEntity, scene, selectCircle } = useScene();
 
   return (
-    <div className="self-stretch w-72 rounded-md p-3 border border-zinc-800">
-      <h2 className="text-xl font-semibold">Element Tree</h2>
+    <div className="self-stretch w-72 rounded-md py-3 border border-zinc-800 flex flex-col gap-2">
+      <h2 className="text-xl font-semibold px-3">Element Tree</h2>
       <hr />
 
       {/* LIST */}
-      <div className="flex flex-col gap-2 mt-2">
+      <div className="flex flex-col gap-2 overflow-y-scroll pl-3">
         {/* Camera */}
         <div
           onClick={() => selectEntity("CAMERA")}
@@ -43,10 +43,9 @@ export default function ElementTree() {
             <p>Circle</p>
           </div>
         ))}
-
-        {/* Add button */}
-        <AddMenu />
       </div>
+      {/* Add button */}
+      <AddMenu />
     </div>
   );
 }
