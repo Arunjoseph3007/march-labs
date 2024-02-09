@@ -1,7 +1,7 @@
 import { IScene } from "./scene";
 import { IVec3 } from "./vec";
 
-export type IEntityType = "CAMERA" | "DIRECT_LIGHT";
+export type IEntityType = "CAMERA" | "DIRECT_LIGHT" | "CIRCLE";
 
 export type ISceneContext = {
   scene: IScene;
@@ -14,6 +14,7 @@ export type ISceneContext = {
   };
   vars: {
     gl: WebGL2RenderingContext | null;
+    program: WebGLProgram | null;
     canvasTopLeftLoc: { x: number; y: number };
     isMouseDown: boolean;
     mousePosition: { x: number; y: number };
@@ -27,5 +28,9 @@ export type ISceneContext = {
   setDirectLight: (pos: IVec3) => void;
   // Editor Control
   selectedEntityType: IEntityType | undefined;
+  selectedShapeId: number | undefined;
   selectEntity: (type: IEntityType) => void;
+  selectCircle: (idx: number) => void;
+  setCircleCenter: (center: IVec3) => void;
+  setCircleRadius: (radius: number) => void;
 };

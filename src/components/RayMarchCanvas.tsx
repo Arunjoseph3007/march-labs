@@ -31,34 +31,34 @@ export default function RayMarchCanvas() {
 
     if (!fragmentShader || !vertexShader) return;
 
-    const program = webgl.createProgram(vars.gl, vertexShader, fragmentShader);
+    vars.program = webgl.createProgram(vars.gl, vertexShader, fragmentShader);
 
-    if (!program) return;
+    if (!vars.program) return;
 
     console.log("Compilation succesful");
 
     const positionAttributeLocation = vars.gl.getAttribLocation(
-      program,
+      vars.program,
       "a_position"
     );
     const resolutionUniformLocation = vars.gl.getUniformLocation(
-      program,
+      vars.program,
       "u_resolution"
     );
     uniforms.mousePositionUniformLocation = vars.gl.getUniformLocation(
-      program,
+      vars.program,
       "u_mouse"
     );
     uniforms.lookFromUniformLocation = vars.gl.getUniformLocation(
-      program,
+      vars.program,
       "u_lookFrom"
     );
     uniforms.lookAtUniformLocation = vars.gl.getUniformLocation(
-      program,
+      vars.program,
       "u_lookAt"
     );
     uniforms.directLightUniformLocation = vars.gl.getUniformLocation(
-      program,
+      vars.program,
       "u_directLight"
     );
 
@@ -88,7 +88,7 @@ export default function RayMarchCanvas() {
     vars.gl.viewport(0, 0, vars.gl.canvas.width, vars.gl.canvas.height);
     vars.gl.clearColor(0, 0, 0, 0);
     vars.gl.clear(vars.gl.COLOR_BUFFER_BIT);
-    vars.gl.useProgram(program);
+    vars.gl.useProgram(vars.program);
     vars.gl.uniform2f(
       resolutionUniformLocation,
       vars.gl.canvas.width,
@@ -105,14 +105,14 @@ export default function RayMarchCanvas() {
     );
 
     scene.circles.forEach((circle, i) => {
-      if (!vars.gl) return;
+      if (!vars.gl || !vars.program) return;
 
       vars.gl.uniform3f(
-        vars.gl.getUniformLocation(program, `u_circles[${i}].center`),
+        vars.gl.getUniformLocation(vars.program, `u_circles[${i}].center`),
         ...circle.center
       );
       vars.gl.uniform1f(
-        vars.gl.getUniformLocation(program, `u_circles[${i}].radius`),
+        vars.gl.getUniformLocation(vars.program, `u_circles[${i}].radius`),
         circle.radius
       );
     });
