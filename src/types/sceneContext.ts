@@ -30,6 +30,8 @@ export type ISceneContext = {
   selectedEntityType: IEntityType | undefined;
   selectedShapeId: number | undefined;
   selectEntity: (type: IEntityType) => void;
+  // Circle Controll
+  addCircle: () => void;
   selectCircle: (idx: number) => void;
   setCircleCenter: (center: IVec3) => void;
   setCircleRadius: (radius: number) => void;

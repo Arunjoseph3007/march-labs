@@ -2,6 +2,7 @@ import useScene from "@/contexts/scene";
 import { BulbIcon } from "@/icons/bulb";
 import { CameraIcon } from "@/icons/camera";
 import { CircleIcon } from "@/icons/circle";
+import AddMenu from "./AddMenu";
 
 export default function ElementTree() {
   const { selectEntity, scene, selectCircle } = useScene();
@@ -42,6 +43,9 @@ export default function ElementTree() {
             <p>Circle</p>
           </div>
         ))}
+
+        {/* Add button */}
+        <AddMenu />
       </div>
     </div>
   );

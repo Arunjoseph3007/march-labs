@@ -42,6 +42,31 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
     setSelectedEntityType(type);
   };
 
+  const addCircle = () => {
+    if (!vars.gl || !vars.program) return;
+
+    const newCircle: ICircle = { center: [1, 0, 0], radius: 2 };
+
+    vars.gl.uniform3f(
+      vars.gl.getUniformLocation(
+        vars.program,
+        `u_circles[${scene.circles.length}].center`
+      ),
+      ...newCircle.center
+    );
+    vars.gl.uniform1f(
+      vars.gl.getUniformLocation(
+        vars.program,
+        `u_circles[${scene.circles.length}].radius`
+      ),
+      newCircle.radius
+    );
+
+    setScene((sc) => {
+      sc.circles.push(newCircle);
+    });
+  };
+
   const selectCircle = (idx: number) => {
     setSelectedEntityType("CIRCLE");
     setSelectedShapeId(idx);
@@ -141,6 +166,7 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
         setCircleCenter,
         selectedShapeId,
         setCircleRadius,
+        addCircle,
       }}
     >
       {children}
