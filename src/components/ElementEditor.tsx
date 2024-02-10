@@ -7,7 +7,7 @@ export default function ElementEditor() {
   const { selectedEntityType } = useScene();
 
   return (
-    <div className="self-stretch w-72 rounded-md p-3 border border-zinc-800">
+    <div className="self-stretch flex-1 rounded-md p-3 border border-zinc-800">
       <h2 className="text-xl font-semibold">Editor</h2>
       <hr />
 

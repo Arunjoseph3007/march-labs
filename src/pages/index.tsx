@@ -14,7 +14,7 @@ export default function Home() {
       </Head>
       <main
         style={montserrat.style}
-        className="h-screen w-screen flex items-center justify-between gap-2 p-2"
+        className="h-screen w-screen flex items-stretch justify-between gap-2 p-2"
       >
         <ElementTree />
         <RayMarchCanvas />

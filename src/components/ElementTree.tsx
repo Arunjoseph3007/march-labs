@@ -8,7 +8,7 @@ export default function ElementTree() {
   const { selectEntity, scene, selectCircle } = useScene();
 
   return (
-    <div className="self-stretch w-72 rounded-md py-3 border border-zinc-800 flex flex-col gap-2">
+    <div className="self-stretch flex-1 rounded-md py-3 border border-zinc-800 flex flex-col gap-2">
       <h2 className="text-xl font-semibold px-3">Element Tree</h2>
       <hr />
 

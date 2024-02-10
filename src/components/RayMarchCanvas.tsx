@@ -166,7 +166,7 @@ export default function RayMarchCanvas() {
       onMouseDown={handlMouseDown}
       onMouseMove={handlMouseMove}
       onMouseUp={handlMouseUp}
-      className="self-stretc flex-1 border border-zinc-800 rounded-md"
+      className="w-[900px] border border-zinc-800 rounded-md"
     />
   );
 }
