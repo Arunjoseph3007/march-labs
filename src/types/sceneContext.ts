@@ -37,5 +37,6 @@ export type ISceneContext = {
   setCircleRadius: (radius: number) => void;
   // Material control
   selectMaterial: (idx: number) => void;
+  addMaterial: () => void;
   setMaterialColor: (color: IVec3) => void;
 };

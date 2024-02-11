@@ -1,11 +1,12 @@
 import useScene from "@/contexts/scene";
 import { AddIcon } from "@/icons/add";
 import { CircleIcon } from "@/icons/circle";
+import { MaterialIcon } from "@/icons/material";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
 export default function AddMenu() {
-  const { addCircle } = useScene();
+  const { addCircle, addMaterial } = useScene();
 
   return (
     <Menu as="div" className="relative inline-block text-left px-3">
@@ -54,11 +55,12 @@ export default function AddMenu() {
             <Menu.Item>
               {({ active }) => (
                 <button
+                  onClick={() => addMaterial()}
                   className={`${
                     active ? "bg-violet-500 text-white" : "text-gray-900"
-                  } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                  } group flex gap-2 w-full items-center rounded-md px-2 py-2 text-sm`}
                 >
-                  Archive
+                  <MaterialIcon color={[150, 150, 150]} /> Material
                 </button>
               )}
             </Menu.Item>
@@ -69,7 +71,7 @@ export default function AddMenu() {
                     active ? "bg-violet-500 text-white" : "text-gray-900"
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                 >
-                  Move
+                  Archive
                 </button>
               )}
             </Menu.Item>

@@ -1,3 +1,4 @@
+import { IMaterial } from "@/types/material";
 import type { IScene } from "@/types/scene";
 import type { IEntityType, ISceneContext } from "@/types/sceneContext";
 import { ICircle } from "@/types/shapes/circle";
@@ -46,6 +47,14 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
   const selectMaterial = (idx: number) => {
     setSelectedEntityId(idx);
     setSelectedEntityType("MATERIAL");
+  };
+
+  const addMaterial = () => {
+    const newMaterial: IMaterial = { color: [234, 123, 12] };
+    // TODO
+    setScene((sc) => {
+      sc.materials.push(newMaterial);
+    });
   };
 
   const setMaterialColor = (color: IVec3) => {
@@ -185,6 +194,7 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
         addCircle,
         selectMaterial,
         setMaterialColor,
+        addMaterial,
       }}
     >
       {children}
