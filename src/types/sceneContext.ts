@@ -1,7 +1,7 @@
 import { IScene } from "./scene";
 import { IVec3 } from "./vec";
 
-export type IEntityType = "CAMERA" | "DIRECT_LIGHT" | "CIRCLE";
+export type IEntityType = "CAMERA" | "DIRECT_LIGHT" | "CIRCLE" | "MATERIAL";
 
 export type ISceneContext = {
   scene: IScene;
@@ -28,11 +28,14 @@ export type ISceneContext = {
   setDirectLight: (pos: IVec3) => void;
   // Editor Control
   selectedEntityType: IEntityType | undefined;
-  selectedShapeId: number | undefined;
+  selectedEntityId: number | undefined;
   selectEntity: (type: IEntityType) => void;
   // Circle Controll
   addCircle: () => void;
   selectCircle: (idx: number) => void;
   setCircleCenter: (center: IVec3) => void;
   setCircleRadius: (radius: number) => void;
+  // Material control
+  selectMaterial: (idx: number) => void;
+  setMaterialColor: (color: IVec3) => void;
 };

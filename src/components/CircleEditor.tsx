@@ -3,8 +3,12 @@ import Vec3Editor from "./common/Vec3Editor";
 import FloatEditor from "./common/FloatEditor";
 
 export default function CircleEditor() {
-  const { setCircleCenter, setCircleRadius, scene, selectedShapeId } =
-    useScene();
+  const {
+    setCircleCenter,
+    setCircleRadius,
+    scene,
+    selectedEntityId: selectedShapeId,
+  } = useScene();
 
   return (
     <div className="mt-2 p-3 rounded-md bg-zinc-950">

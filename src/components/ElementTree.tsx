@@ -3,9 +3,10 @@ import { BulbIcon } from "@/icons/bulb";
 import { CameraIcon } from "@/icons/camera";
 import { CircleIcon } from "@/icons/circle";
 import AddMenu from "./AddMenu";
+import { MaterialIcon } from "@/icons/material";
 
 export default function ElementTree() {
-  const { selectEntity, scene, selectCircle } = useScene();
+  const { selectEntity, scene, selectCircle, selectMaterial } = useScene();
 
   return (
     <div className="self-stretch flex-1 rounded-md py-3 border border-zinc-800 flex flex-col gap-2">
@@ -31,6 +32,18 @@ export default function ElementTree() {
           <BulbIcon />
           <p>Direct Light</p>
         </div>
+
+        {/* Materials */}
+        {scene.materials.map((material, i) => (
+          <div
+            onClick={() => selectMaterial(i)}
+            key={i}
+            className="flex items-center gap-4 p-3 rounded-md bg-zinc-950 hover:bg-zinc-900 transition-all font-semibold cursor-pointer"
+          >
+            <MaterialIcon {...material} />
+            <p>Material</p>
+          </div>
+        ))}
 
         {/* Shapes */}
         {scene.circles.map((_, i) => (

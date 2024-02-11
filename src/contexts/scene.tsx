@@ -34,12 +34,28 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
       { center: [0, 0, 0], radius: 2 },
       { center: [6.2, 2.2, 2.2], radius: 0.8 },
     ],
+    materials: [{ color: [227, 30, 210] }, { color: [9, 17, 235] }],
   });
   const [selectedEntityType, setSelectedEntityType] = useState<IEntityType>();
-  const [selectedShapeId, setSelectedShapeId] = useState<number>();
+  const [selectedEntityId, setSelectedEntityId] = useState<number>();
 
   const selectEntity = (type: IEntityType) => {
     setSelectedEntityType(type);
+  };
+
+  const selectMaterial = (idx: number) => {
+    setSelectedEntityId(idx);
+    setSelectedEntityType("MATERIAL");
+  };
+
+  const setMaterialColor = (color: IVec3) => {
+    if (selectedEntityId == undefined) return;
+
+    // TODO: set unifroms in context
+
+    setScene((sc) => {
+      sc.materials[selectedEntityId].color = color;
+    });
   };
 
   const addCircle = () => {
@@ -69,36 +85,36 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
 
   const selectCircle = (idx: number) => {
     setSelectedEntityType("CIRCLE");
-    setSelectedShapeId(idx);
+    setSelectedEntityId(idx);
   };
 
   const setCircleCenter = (center: IVec3) => {
-    if (!vars.gl || !vars.program || selectedShapeId == undefined) return;
+    if (!vars.gl || !vars.program || selectedEntityId == undefined) return;
 
     setScene((sc) => {
-      sc.circles[selectedShapeId].center = center;
+      sc.circles[selectedEntityId].center = center;
     });
 
     vars.gl.uniform3f(
       vars.gl.getUniformLocation(
         vars.program,
-        `u_circles[${selectedShapeId}].center`
+        `u_circles[${selectedEntityId}].center`
       ),
       ...center
     );
   };
 
   const setCircleRadius = (radius: number) => {
-    if (!vars.gl || !vars.program || selectedShapeId == undefined) return;
+    if (!vars.gl || !vars.program || selectedEntityId == undefined) return;
 
     setScene((sc) => {
-      sc.circles[selectedShapeId].radius = radius;
+      sc.circles[selectedEntityId].radius = radius;
     });
 
     vars.gl.uniform1f(
       vars.gl.getUniformLocation(
         vars.program,
-        `u_circles[${selectedShapeId}].radius`
+        `u_circles[${selectedEntityId}].radius`
       ),
       radius
     );
@@ -164,9 +180,11 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
         uniforms,
         selectCircle,
         setCircleCenter,
-        selectedShapeId,
+        selectedEntityId,
         setCircleRadius,
         addCircle,
+        selectMaterial,
+        setMaterialColor,
       }}
     >
       {children}
