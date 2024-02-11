@@ -1,19 +1,24 @@
-import { IMaterial } from "@/types/material";
+import type { IMaterial } from "@/types/material";
 import type { IScene } from "@/types/scene";
-import type { IEntityType, ISceneContext } from "@/types/sceneContext";
-import { ICircle } from "@/types/shapes/circle";
+import type { ICircle } from "@/types/shapes/circle";
 import type { IVec3 } from "@/types/vec";
+import type {
+  IEntityType,
+  ISceneContext,
+  ISceneUniforms,
+  ISceneVars,
+} from "@/types/sceneContext";
 import { ReactNode, createContext, useContext, useState } from "react";
 import { useImmer } from "use-immer";
 
-const vars: ISceneContext["vars"] = {
+const vars: ISceneVars = {
   gl: null,
   canvasTopLeftLoc: { x: 0, y: 0 },
   isMouseDown: false,
   mousePosition: { x: 0, y: 0 },
   program: null,
 };
-const uniforms: ISceneContext["uniforms"] = {
+const uniforms: ISceneUniforms = {
   mousePositionUniformLocation: null,
   lookFromUniformLocation: null,
   lookAtUniformLocation: null,
@@ -35,7 +40,11 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
       { center: [0, 0, 0], radius: 2 },
       { center: [6.2, 2.2, 2.2], radius: 0.8 },
     ],
-    materials: [{ color: [227, 30, 210] }, { color: [9, 17, 235] }],
+    materials: [
+      { color: [227, 30, 210] },
+      { color: [9, 17, 235] },
+      { color: [235, 110, 52] },
+    ],
   });
   const [selectedEntityType, setSelectedEntityType] = useState<IEntityType>();
   const [selectedEntityId, setSelectedEntityId] = useState<number>();
@@ -50,7 +59,17 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
   };
 
   const addMaterial = () => {
+    if (!vars.gl || !vars.program) return;
+
     const newMaterial: IMaterial = { color: [234, 123, 12] };
+
+    vars.gl.uniform3f(
+      vars.gl.getUniformLocation(
+        vars.program,
+        `u_materials[${scene.materials.length}].color`
+      ),
+      ...newMaterial.color
+    );
     // TODO
     setScene((sc) => {
       sc.materials.push(newMaterial);
@@ -58,9 +77,15 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
   };
 
   const setMaterialColor = (color: IVec3) => {
-    if (selectedEntityId == undefined) return;
+    if (!vars.gl || !vars.program || selectedEntityId == undefined) return;
 
-    // TODO: set unifroms in context
+    vars.gl.uniform3f(
+      vars.gl.getUniformLocation(
+        vars.program,
+        `u_materials[${selectedEntityId}].color`
+      ),
+      ...color
+    );
 
     setScene((sc) => {
       sc.materials[selectedEntityId].color = color;

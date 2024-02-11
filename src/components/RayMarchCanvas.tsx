@@ -117,6 +117,15 @@ export default function RayMarchCanvas() {
       );
     });
 
+    scene.materials.forEach((material, i) => {
+      if (!vars.gl || !vars.program) return;
+
+      vars.gl.uniform3f(
+        vars.gl.getUniformLocation(vars.program, `u_materials[${i}].color`),
+        ...material.color
+      );
+    });
+
     vars.gl.drawArrays(vars.gl.TRIANGLES, 0, 6);
 
     const animId = requestAnimationFrame(renderLoop);
@@ -146,7 +155,7 @@ export default function RayMarchCanvas() {
   };
 
   const renderLoop: FrameRequestCallback = (timeStamp) => {
-    if (vars.gl && false) {
+    if (vars.gl) {
       vars.gl.drawArrays(vars.gl.TRIANGLES, 0, 6);
 
       vars.gl.uniform3f(

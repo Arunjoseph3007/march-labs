@@ -3,6 +3,10 @@ precision highp float;
 in vec2 pos;
 out vec4 outColor;
 
+struct Material {
+  vec3 color;
+};
+
 struct Circle {
   vec3 center;
   float radius;
@@ -14,6 +18,7 @@ uniform vec3 u_lookFrom;
 uniform vec3 u_lookAt;
 uniform vec3 u_directLight;
 uniform Circle u_circles[10];
+uniform Material u_materials[10];
 
 mat2 rot(float a){
   float c = cos(a);
@@ -42,41 +47,52 @@ float circleSDF(vec3 pos, vec3 center, float r){
   return length(center - pos) - r;
 }
 
-float getDist(vec3 pos){
+vec2 getDist(vec3 pos){
   float dist = pos.y+2.;
+  float materialId = 0.;
 
   for(int i = 0; i < u_circles.length(); i++){
-    dist = min(dist,circleSDF(pos, u_circles[i].center, u_circles[i].radius));
+    Circle c = u_circles[i];
+    float cDist = circleSDF(pos, c.center, c.radius);
+    if(cDist < dist){
+      dist = cDist;
+      materialId = float(i+1);
+    }
   }
 
-  return dist;
+  return vec2(dist, materialId);
 }
 
 vec3 getNormal(vec3 pos){
-  float d = getDist(pos);
+  float d = getDist(pos).x;
   
   vec3 n = d - vec3(
-      getDist(vec3(pos.x - .01, pos.y,       pos.z)),
-      getDist(vec3(pos.x,       pos.y - .01, pos.z)),
-      getDist(vec3(pos.x,       pos.y,       pos.z - .01))
+      getDist(vec3(pos.x - .01, pos.y,       pos.z)).x,
+      getDist(vec3(pos.x,       pos.y - .01, pos.z)).x,
+      getDist(vec3(pos.x,       pos.y,       pos.z - .01)).x
   );
   
   return normalize(n);
 }
 
-vec2 rayMarch(vec3 org, vec3 dir){
+vec3 rayMarch(vec3 org, vec3 dir){
   float depth = 0.0;
   float minT = 999999.0;
+  float material = -1.;
 
   for(int i = 0; i < MAX_STEPS; i++){
     vec3 pos = org + depth * dir;
-    float t = getDist(pos);
-    minT = min(minT,t);
+    vec2 res = getDist(pos);
+    float t = res.x;
+    if(t<minT){
+      minT = min(minT,t);
+      material = res.y;
+    }
     depth += t;
     if(t < MIN_DIST || depth > MAX_DIST) break;
   }
 
-  return vec2(depth,minT);
+  return vec3(depth,minT,material);
 }
 
 vec3 skyBox(vec3 dir){
@@ -95,19 +111,22 @@ void main(){
   
   vec3 dir = GetRayDir(uv, org, u_lookAt, .8);
   
-  float t = rayMarch(org, dir).x;
+  vec3 marchRes = rayMarch(org, dir);
+  float t = marchRes.x;
+  int material = int(marchRes.z);
   if(t < MAX_DIST){
+    col = u_materials[material].color/255.;
     vec3 pos = org + dir * t;
 
     // Direct lighting
     vec3 normal = getNormal(pos);
-    col = vec3(1,0,1);
+    // col = vec3(1,0,1);
     col *= dot(normalize(u_directLight), normal)/2.0+0.4;
 
     // Shadow
     float shadowRadius = 5.0;
     vec3 lightDir = normalize(u_directLight-pos);
-    vec2 shadowRes = rayMarch(pos + normal * 0.7, lightDir);
+    vec3 shadowRes = rayMarch(pos + normal * 0.7, lightDir);
     float distToLight = shadowRes.x;
     if(shadowRes.y < MIN_DIST){
       float shadowFactor = 0.5;
