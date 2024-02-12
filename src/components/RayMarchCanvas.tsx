@@ -115,6 +115,10 @@ export default function RayMarchCanvas() {
         vars.gl.getUniformLocation(vars.program, `u_circles[${i}].radius`),
         circle.radius
       );
+      vars.gl.uniform1i(
+        vars.gl.getUniformLocation(vars.program, `u_circles[${i}].materialId`),
+        circle.materialId
+      );
     });
 
     scene.materials.forEach((material, i) => {

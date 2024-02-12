@@ -10,6 +10,7 @@ struct Material {
 struct Circle {
   vec3 center;
   float radius;
+  int materialId;
 };
 
 uniform vec3 u_mouse;
@@ -56,7 +57,7 @@ vec2 getDist(vec3 pos){
     float cDist = circleSDF(pos, c.center, c.radius);
     if(cDist < dist){
       dist = cDist;
-      materialId = float(i+1);
+      materialId = float(c.materialId);
     }
   }
 

@@ -1,11 +1,13 @@
 import useScene from "@/contexts/scene";
 import Vec3Editor from "./common/Vec3Editor";
 import FloatEditor from "./common/FloatEditor";
+import MaterialTypeEditor from "./MaterialTypeEditor";
 
 export default function CircleEditor() {
   const {
     setCircleCenter,
     setCircleRadius,
+    setCircleMaterial,
     scene,
     selectedEntityId: selectedShapeId,
   } = useScene();
@@ -24,6 +26,10 @@ export default function CircleEditor() {
         onChange={setCircleRadius}
         min={0}
         max={20}
+      />
+      <MaterialTypeEditor
+        value={scene.circles[selectedShapeId!].materialId}
+        onChange={setCircleMaterial}
       />
     </div>
   );

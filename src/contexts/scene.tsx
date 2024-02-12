@@ -37,8 +37,8 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
     },
     directLight: [4, 4, 4],
     circles: [
-      { center: [0, 0, 0], radius: 2 },
-      { center: [6.2, 2.2, 2.2], radius: 0.8 },
+      { center: [0, 0, 0], radius: 2, materialId: 1 },
+      { center: [6.2, 2.2, 2.2], radius: 0.8, materialId: 2 },
     ],
     materials: [
       { color: [227, 30, 210] },
@@ -95,7 +95,7 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
   const addCircle = () => {
     if (!vars.gl || !vars.program) return;
 
-    const newCircle: ICircle = { center: [1, 0, 0], radius: 2 };
+    const newCircle: ICircle = { center: [1, 0, 0], radius: 2, materialId: 1 };
 
     vars.gl.uniform3f(
       vars.gl.getUniformLocation(
@@ -110,6 +110,13 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
         `u_circles[${scene.circles.length}].radius`
       ),
       newCircle.radius
+    );
+    vars.gl.uniform1i(
+      vars.gl.getUniformLocation(
+        vars.program,
+        `u_circles[${scene.circles.length}].materialId`
+      ),
+      newCircle.materialId
     );
 
     setScene((sc) => {
@@ -135,6 +142,22 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
         `u_circles[${selectedEntityId}].center`
       ),
       ...center
+    );
+  };
+
+  const setCircleMaterial = (materialId: number) => {
+    if (!vars.gl || !vars.program || selectedEntityId == undefined) return;
+
+    setScene((sc) => {
+      sc.circles[selectedEntityId].materialId = materialId;
+    });
+
+    vars.gl.uniform1i(
+      vars.gl.getUniformLocation(
+        vars.program,
+        `u_circles[${selectedEntityId}].materialId`
+      ),
+      materialId
     );
   };
 
@@ -216,6 +239,7 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
         setCircleCenter,
         selectedEntityId,
         setCircleRadius,
+        setCircleMaterial,
         addCircle,
         selectMaterial,
         setMaterialColor,

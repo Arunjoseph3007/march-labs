@@ -39,6 +39,7 @@ export type ISceneContext = {
   selectCircle: (idx: number) => void;
   setCircleCenter: (center: IVec3) => void;
   setCircleRadius: (radius: number) => void;
+  setCircleMaterial: (materialId: number) => void;
   // Material control
   selectMaterial: (idx: number) => void;
   addMaterial: () => void;
