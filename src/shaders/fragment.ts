@@ -5,6 +5,7 @@ out vec4 outColor;
 
 struct Material {
   vec3 color;
+  float bumpSize;
 };
 
 struct Circle {
@@ -18,8 +19,8 @@ uniform vec2 u_resolution;
 uniform vec3 u_lookFrom;
 uniform vec3 u_lookAt;
 uniform vec3 u_directLight;
-uniform Circle u_circles[10];
-uniform Material u_materials[10];
+uniform Circle u_circles[5];
+uniform Material u_materials[5];
 
 mat2 rot(float a){
   float c = cos(a);
@@ -33,6 +34,31 @@ mat2 rot(float a){
 #define PI 3.141592
 #define RGB(X,Y,Z) vec3(X,Y,Z)/255.0
 
+float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
+vec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
+vec4 perm(vec4 x){return mod289(((x * 34.0) + 1.0) * x);}
+
+float rand(vec3 p){
+  vec3 a = floor(p);
+    vec3 d = p - a;
+    d = d * d * (3.0 - 2.0 * d);
+
+    vec4 b = a.xxyy + vec4(0.0, 1.0, 0.0, 1.0);
+    vec4 k1 = perm(b.xyxy);
+    vec4 k2 = perm(k1.xyxy + b.zzww);
+
+    vec4 c = k2 + a.zzzz;
+    vec4 k3 = perm(c);
+    vec4 k4 = perm(c + 1.0);
+
+    vec4 o1 = fract(k3 * (1.0 / 41.0));
+    vec4 o2 = fract(k4 * (1.0 / 41.0));
+
+    vec4 o3 = o2 * d.z + o1 * (1.0 - d.z);
+    vec2 o4 = o3.yw * d.x + o3.xz * (1.0 - d.x);
+
+    return o4.y * d.y + o4.x * (1.0 - d.y);
+}
 
 vec3 GetRayDir(vec2 uv, vec3 from, vec3 lookat, float fov) {
   vec3 upDir = vec3(0,1,0);
@@ -44,9 +70,17 @@ vec3 GetRayDir(vec2 uv, vec3 from, vec3 lookat, float fov) {
   return normalize(i);
 }
 
-float circleSDF(vec3 pos, vec3 center, float r){
-  return length(center - pos) - r;
+float circleSDF(vec3 pos, Circle cir){
+  float bs = u_materials[cir.materialId].bumpSize;
+  return length(cir.center - pos) - cir.radius + bs*rand(pos*10.);
 }
+
+vec3 rep(vec3 p, vec2 factor){
+  return p;
+	vec2 tmp = mod(p.xz, factor) - 0.5*factor;
+	return vec3(tmp.x, p.y, tmp.y);
+}
+
 
 vec2 getDist(vec3 pos){
   float dist = pos.y+2.;
@@ -54,7 +88,7 @@ vec2 getDist(vec3 pos){
 
   for(int i = 0; i < u_circles.length(); i++){
     Circle c = u_circles[i];
-    float cDist = circleSDF(pos, c.center, c.radius);
+    float cDist = circleSDF(rep(pos, vec2(5)), c);
     if(cDist < dist){
       dist = cDist;
       materialId = float(c.materialId);

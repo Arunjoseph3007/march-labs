@@ -44,4 +44,5 @@ export type ISceneContext = {
   selectMaterial: (idx: number) => void;
   addMaterial: () => void;
   setMaterialColor: (color: IVec3) => void;
+  setMaterialBumpSize: (bumpSize: number) => void;
 };

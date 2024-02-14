@@ -128,6 +128,10 @@ export default function RayMarchCanvas() {
         vars.gl.getUniformLocation(vars.program, `u_materials[${i}].color`),
         ...material.color
       );
+      vars.gl.uniform1f(
+        vars.gl.getUniformLocation(vars.program, `u_materials[${i}].bumpSize`),
+        material.bumpSize
+      );
     });
 
     vars.gl.drawArrays(vars.gl.TRIANGLES, 0, 6);

@@ -41,9 +41,9 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
       { center: [6.2, 2.2, 2.2], radius: 0.8, materialId: 2 },
     ],
     materials: [
-      { color: [227, 30, 210] },
-      { color: [9, 17, 235] },
-      { color: [235, 110, 52] },
+      { color: [227, 30, 210], bumpSize: 0.1 },
+      { color: [9, 17, 235], bumpSize: 0.05 },
+      { color: [235, 110, 52], bumpSize: 0.1 },
     ],
   });
   const [selectedEntityType, setSelectedEntityType] = useState<IEntityType>();
@@ -61,7 +61,7 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
   const addMaterial = () => {
     if (!vars.gl || !vars.program) return;
 
-    const newMaterial: IMaterial = { color: [234, 123, 12] };
+    const newMaterial: IMaterial = { color: [234, 123, 12], bumpSize: 2 };
 
     vars.gl.uniform3f(
       vars.gl.getUniformLocation(
@@ -89,6 +89,22 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
 
     setScene((sc) => {
       sc.materials[selectedEntityId].color = color;
+    });
+  };
+
+  const setMaterialBumpSize = (bumpSize: number) => {
+    if (!vars.gl || !vars.program || selectedEntityId == undefined) return;
+
+    vars.gl.uniform1f(
+      vars.gl.getUniformLocation(
+        vars.program,
+        `u_materials[${selectedEntityId}].bumpSize`
+      ),
+      bumpSize
+    );
+
+    setScene((sc) => {
+      sc.materials[selectedEntityId].bumpSize = bumpSize;
     });
   };
 
@@ -244,6 +260,7 @@ export function SceneContextProvider({ children }: { children: ReactNode }) {
         selectMaterial,
         setMaterialColor,
         addMaterial,
+        setMaterialBumpSize,
       }}
     >
       {children}
